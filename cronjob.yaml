@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: jira-reminder-cron
+spec:
+  schedule: "0 0 * * *"    # Cron schedule expression (runs daily at midnight)
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: jira-reminder-cron
+            image: ghcr.io/danielsinai/jira-reminder:latest
+            imagePullPolicy: Always
+            env:
+              - name: JIRA_URL
+                value: "https://your-jira-url.com"
+              - name: JIRA_USERNAME
+                value: "username@example.com"
+              - name: JIRA_API_TOKEN
+                value: "your-api-token"
+              - name: SLACK_TOKEN
+                value: "your-slack-token"
+              - name: SLACK_CHANNEL_ID
+                value: "your-slack-channel"
+              - name: JQL_QUERY
+                value: "project = YOUR_PROJECT AND status = \"To Do\""
+          restartPolicy: OnFailure
